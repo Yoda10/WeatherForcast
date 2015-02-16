@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Weather</string>    
+    <string name="button_search">Search</string>
+    <string name="button_search_problem">Problem !</string>
+    <string name="text_search_hint">City</string>
+
+</resources>

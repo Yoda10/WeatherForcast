@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_weather_layout_h"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/fragment_weather_layout_h_r1"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent" >
+
+        <TextView
+            android:id="@+id/fragment_weather_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="12dp"            
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/fragment_weather_date_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_weather_city"
+            android:layout_centerInParent="true"            
+            android:textColor="@android:color/black"
+            android:textSize="15sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/fragment_weather_date_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_weather_date_from"
+            android:layout_centerInParent="true"            
+            android:textColor="@android:color/black"
+            android:textSize="15sp" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/fragment_weather_search_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fragment_weather_date_to"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="45dp"
+            android:hint="@string/text_search_hint"
+            android:inputType="text"
+            android:maxWidth="130dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" >
+        </EditText>
+
+        <Button
+            android:id="@+id/fragment_weather_search_button"
+            style="@style/btnStyleBeige"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_below="@+id/fragment_weather_search_city"
+            android:layout_centerInParent="true"
+            android:text="@string/button_search"          
+            android:textSize="15sp" >
+        </Button>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/fragment_weather_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal" >
+    </ListView>
+
+</LinearLayout>

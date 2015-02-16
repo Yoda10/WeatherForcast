@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="WeatherView">
+        <attr name="steps" format="integer" />
+        <attr name="drawableId" format="reference" />
+        <attr name="position" format="integer" />
+        <attr name="textSize" format="integer" />
+        <attr name="setHeightByDrawble" format="boolean" />
+        <attr name="textLeft" format="string" />
+        <attr name="textDrawable" format="string" />
+    </declare-styleable>
+
+</resources>
