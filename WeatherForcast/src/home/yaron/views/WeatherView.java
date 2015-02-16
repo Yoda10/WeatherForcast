@@ -1,4 +1,4 @@
-package home.yaron.weather;
+package home.yaron.views;
 
 import home.yaron.weather_forcast.R;
 import android.content.Context;

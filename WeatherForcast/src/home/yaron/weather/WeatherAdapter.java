@@ -1,5 +1,6 @@
 package home.yaron.weather;
 
+import home.yaron.views.WeatherView;
 import home.yaron.weather_forcast.R;
 
 import java.text.SimpleDateFormat;
