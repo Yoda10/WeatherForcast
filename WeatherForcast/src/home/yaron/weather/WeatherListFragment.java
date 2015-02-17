@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -158,10 +160,15 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	@Override
 	public void onClick(View v)
 	{
+		// Get the search text.
 		final EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
 		final String city = searchCity.getText().toString().trim();
 		searchCity.setText(city); // Set the trim operation.
 		searchCity.setSelection(city.length()); // Move the cursor to the end.
+
+		// Hide the keyboard after the search click.
+		final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(searchCity.getWindowToken(), 0);
 
 		if( !city.equalsIgnoreCase("update") )
 		{
