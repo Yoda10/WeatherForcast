@@ -135,7 +135,18 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 			{				
 				weatherForcastData = result;
 				setListAdapterAndHeader();
-				button.setText(getResources().getString(R.string.button_search));
+				button.setText(getResources().getString(R.string.button_search));				
+				
+				// Set trim search text.
+				final EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
+				final String city = searchCity.getText().toString().trim();
+				searchCity.setText(city); // Set the trim operation.
+				searchCity.setSelection(city.length()); // Move the cursor to the end.
+				
+				// Hide the keyboard.
+				final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputMethodManager.hideSoftInputFromWindow(searchCity.getWindowToken(), 0);
+				
 				fragmentView.invalidate();
 			}
 			else
@@ -162,13 +173,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	{
 		// Get the search text.
 		final EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
-		final String city = searchCity.getText().toString().trim();
-		searchCity.setText(city); // Set the trim operation.
-		searchCity.setSelection(city.length()); // Move the cursor to the end.
-
-		// Hide the keyboard after the search click.
-		final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputMethodManager.hideSoftInputFromWindow(searchCity.getWindowToken(), 0);
+		final String city = searchCity.getText().toString().trim();				
 
 		if( !city.equalsIgnoreCase("update") )
 		{
