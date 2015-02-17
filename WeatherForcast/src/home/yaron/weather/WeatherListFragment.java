@@ -158,8 +158,10 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	@Override
 	public void onClick(View v)
 	{
-		EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
-		String city = searchCity.getText().toString();
+		final EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
+		final String city = searchCity.getText().toString().trim();
+		searchCity.setText(city); // Set the trim operation.
+		searchCity.setSelection(city.length()); // Move the cursor to the end.
 
 		if( !city.equalsIgnoreCase("update") )
 		{
