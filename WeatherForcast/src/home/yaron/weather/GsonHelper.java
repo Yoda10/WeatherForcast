@@ -9,20 +9,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.util.Log;
@@ -32,55 +24,8 @@ import com.google.gson.Gson;
 public class GsonHelper
 {
 	public final static String ASSET_WHEATHER_JERUSALEM_JSON = "WheatherJerusalemJson.txt";
-	public final static String JSON_FILE_NAME = "JsonWeather.json";	
-
-	/**
-	 * Http connection with apache http objects.
-	 */
-	public String loadingJsonFromUrl(String url) throws ClientProtocolException, IOException
-	{
-		String result = null;
-		DefaultHttpClient httpClient = null;
-
-		try
-		{
-			final HttpParams httpParameters = new BasicHttpParams();
-			// Set the timeout in milliseconds until a connection is established.
-			// The default value is zero, that means the timeout is not used. 
-			final int timeoutConnection = 3000;
-			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-			// Set the default socket timeout (SO_TIMEOUT) 
-			// in milliseconds which is the timeout for waiting for data.
-			final int timeoutSocket = 10000;
-			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);		
-
-			//  Making HTTP request - defaultHttpClient
-			httpClient = new DefaultHttpClient();
-			httpClient.setParams(httpParameters);
-			final HttpPost httpPost = new HttpPost(url);
-			HttpResponse httpResponse = httpClient.execute(httpPost);		
-			final HttpEntity httpEntity = httpResponse.getEntity();
-			final InputStream is = httpEntity.getContent();
-
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf-8"),8);
-			final StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null)
-			{
-				sb.append(line + "\n");
-			}
-			is.close();		
-			result = sb.toString();
-
-			Log.v("Yaron","Loading Json from web.");
-		}
-		finally {
-			if( httpClient != null )
-				httpClient.getConnectionManager().shutdown();
-		}
-
-		return result;		
-	}
+	public final static String JSON_FILE_NAME = "JsonWeather.json";
+	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	public String readWeatherJsonFromAsset(Context context)
 	{		
@@ -254,5 +199,55 @@ public class GsonHelper
 
 		return stringBuilder.toString();
 	}	
+
+	/**
+	 * Http connection with HttpURLConnection object.
+	 * @throws IOException 
+	 * @throws IOException 
+	 */
+	public String loadingJsonFromUrl(String url) throws IOException
+	{		
+		HttpURLConnection connection = null;		
+		BufferedReader reader = null;
+
+		try
+		{
+			final URL siteUrl = new URL(url);
+			connection = (HttpURLConnection)siteUrl.openConnection();
+			connection.setReadTimeout(10000);  	  /* milliseconds */
+			connection.setConnectTimeout(15000 ); /* milliseconds */
+			connection.setRequestMethod("GET");
+			connection.setDoInput(true);
+			connection.setDoOutput(false);
+
+			// Starts the query
+			connection.connect();
+			final int response = connection.getResponseCode();
+			Log.d("Yaron", "Server response code:" + response);
+
+			// Read the server input stream.
+			final InputStream inputStream = connection.getInputStream();
+			reader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"),4000);
+			final StringBuilder stringBuilder = new StringBuilder();
+			String line = null;
+			while((line = reader.readLine()) != null)
+			{
+				stringBuilder.append(line + LINE_SEPARATOR);
+			}
+			inputStream.close();	
+			final String result = stringBuilder.toString();
+			
+			Log.v("Yaron","Loading Json from the web.");
+
+			return result;
+		}
+		finally {
+			// Makes sure that the InputStream and the connection are closed after finishing using it.
+			if(reader != null)
+				reader.close();
+			if(connection != null)
+				connection.disconnect();
+		}
+	}		
 }
 
