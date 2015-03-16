@@ -177,7 +177,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 
 		if( !city.equalsIgnoreCase("update") )
 		{
-			URL url = setCityNameToUrl(city);	
+			final URL url = setCityNameToUrl(city);	
 			new JsonAsyncLoad().execute(url);
 		}
 		else
@@ -204,7 +204,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 
 		try
 		{
-			String urlString = MainActivity.URL_WEATHER_FORCAST.replace("MyCity", city.trim());
+			final String urlString = MainActivity.URL_WEATHER_FORCAST.replace("MyCity", city.trim());
 			weatherUrl = new URL(urlString);		
 		}
 		catch(MalformedURLException e)

@@ -51,7 +51,7 @@ public class GsonHelper
 			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
 			// Set the default socket timeout (SO_TIMEOUT) 
 			// in milliseconds which is the timeout for waiting for data.
-			final int timeoutSocket = 5000;
+			final int timeoutSocket = 10000;
 			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);		
 
 			//  Making HTTP request - defaultHttpClient
