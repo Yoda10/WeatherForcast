@@ -1,4 +1,4 @@
-package home.yaron.test;
+package home.yaron.deploy;
 
 
 import home.yaron.deploy.R;
@@ -25,25 +25,16 @@ public class TestActivity extends Activity
 		setContentView(R.layout.activity_test);
 
 		final AutoCompleteTextView autoComplete = (AutoCompleteTextView)findViewById(R.id.auto_complete_text);
-		autoComplete.setThreshold(1);		
+		autoComplete.setThreshold(1);
 
 		// Load button
-		Button loadButton = (Button)findViewById(R.id.button1);
 		final Context context = this;
-		loadButton.setOnClickListener(new OnClickListener() {	
-
-			@Override
-			public void onClick(View v) {
-				countryList = Helper.parseJsonCountriesFile(context);
-			}
-		});
-
-		// Load button
-		Button fileButton = (Button)findViewById(R.id.button2);		
+		Button fileButton = (Button)findViewById(R.id.button1);		
 		fileButton.setOnClickListener(new OnClickListener() {			
 
 			@Override
 			public void onClick(View v) {
+				countryList = Helper.parseJsonCountriesFile(context);
 				citiesSet = (SortedSet<String>)Helper.createCitiesSet(countryList);
 				Helper.saveCitiesSetToFile(citiesSet);
 				final AutocompleteAdapter adapter = new AutocompleteAdapter(context, android.R.layout.simple_list_item_1, citiesSet);					

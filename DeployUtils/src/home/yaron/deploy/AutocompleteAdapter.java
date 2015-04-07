@@ -1,4 +1,4 @@
-package home.yaron.test;
+package home.yaron.deploy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +13,7 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 	public AutocompleteAdapter(Context context, int textViewResourceId, SortedSet<String> data)
 	{
 		super(context, textViewResourceId);
-		mOriginalValues = data;
-		//super(context, textViewResourceId,data);
+		mOriginalValues = data;		
 	}
 	
 	private YaronFilter yaronFilter = null;

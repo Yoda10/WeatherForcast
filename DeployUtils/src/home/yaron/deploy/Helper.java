@@ -1,6 +1,6 @@
-package home.yaron.test;
+package home.yaron.deploy;
 
-import home.yaron.test.CountryList.Country;
+import home.yaron.deploy.CountryList.Country;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
