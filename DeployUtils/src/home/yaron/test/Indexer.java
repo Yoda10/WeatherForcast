@@ -32,158 +32,158 @@ public class Indexer
 		return new HashMap();		
 	}
 
-	public CountryList parseJsonCountriesFile(Context context) throws IOException
-	{	
-		int objectCounter = 0;
-		CountryList countryList = new CountryList();
+//	public CountryList parseJsonCountriesFile(Context context) throws IOException
+//	{	
+//		int objectCounter = 0;
+//		CountryList countryList = new CountryList();
+//
+//		final AssetManager assetManager = context.getAssets();
+//		final InputStream inputStream = assetManager.open(CITIES_FILE);		
+//		final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"));		
+//		final JsonReader jsonReader = new JsonReader(bufferedReader);
+//
+//		try
+//		{
+//			jsonReader.beginObject();
+//			while( jsonReader.hasNext() )
+//			{
+//				// Parse country name.
+//				objectCounter++;
+//				final String countryName = jsonReader.nextName();
+//				countryList.addCountryName(countryName);
+//				Log.d(TAG,"counter:"+objectCounter+" country:"+countryName);
+//
+//				// Parse cities list.
+//				jsonReader.beginArray();
+//				while( jsonReader.hasNext() )
+//				{
+//					final String cityName = jsonReader.nextString();
+//					countryList.addCityName(cityName);
+//					Log.d(TAG,"city:"+cityName);
+//				}
+//				jsonReader.endArray();			
+//			}
+//			jsonReader.endObject();				
+//
+//			Log.d(TAG, "Succsesfuly parsed Json countries list.");
+//		}
+//		catch(Exception ex)
+//		{
+//			countryList = null;
+//			Log.e(TAG, "Problems parsing Json countries list.", ex);
+//		}
+//		finally
+//		{
+//			if( jsonReader != null )
+//				jsonReader.close();			
+//		}		
+//
+//		return countryList;
+//	}	
 
-		final AssetManager assetManager = context.getAssets();
-		final InputStream inputStream = assetManager.open(CITIES_FILE);		
-		final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"));		
-		final JsonReader jsonReader = new JsonReader(bufferedReader);
+//	public Set<String> loadAndSortCities(CountryList countryList)
+//	{
+//		int counter = 0;
+//		final TreeSet<String> citiesSet = new TreeSet<String>();
+//
+//		for( final Country theCountry : countryList.allCountries )
+//		{
+//			for( final String theCity : theCountry.cities )
+//			{
+//				counter++;
+//				citiesSet.add(theCity);
+//			}
+//		}
+//
+//		Log.d(TAG, "Load and sort "+counter+" cities.");
+//		
+//		return citiesSet;
+//	}
 
-		try
-		{
-			jsonReader.beginObject();
-			while( jsonReader.hasNext() )
-			{
-				// Parse country name.
-				objectCounter++;
-				final String countryName = jsonReader.nextName();
-				countryList.addCountryName(countryName);
-				Log.d(TAG,"counter:"+objectCounter+" country:"+countryName);
+//	public void saveCitiesToFile(Set<String> citiesSet) throws IOException
+//	{
+//		//SortedSet subSet = ((TreeSet)citiesSet).subSet("J", "K");
+//		//citiesSet = subSet;
+//		
+//		int counter = 0;
+//		FileWriter fileWriter = null;
+//		BufferedWriter bufferedWriter = null;
+//
+//		try
+//		{			
+//			final File file = new File(Environment.getExternalStoragePublicDirectory("Yaron"),"Cities3.txt");			
+//			if (!file.exists())
+//			{				
+//				file.createNewFile();
+//			}
+//
+//			fileWriter = new FileWriter(file,false);
+//			bufferedWriter = new BufferedWriter(fileWriter);
+//
+//			for( String theCity : citiesSet)
+//			{
+//				counter++;
+//				bufferedWriter.write(theCity);
+//				bufferedWriter.newLine();
+//			}
+//		}
+//		finally
+//		{
+//			if( bufferedWriter != null )
+//				bufferedWriter.close();
+//		}		
+//
+//		Log.d(TAG, "Write to file "+counter+" cities.");
+//	}
 
-				// Parse cities list.
-				jsonReader.beginArray();
-				while( jsonReader.hasNext() )
-				{
-					final String cityName = jsonReader.nextString();
-					countryList.addCityName(cityName);
-					Log.d(TAG,"city:"+cityName);
-				}
-				jsonReader.endArray();			
-			}
-			jsonReader.endObject();				
-
-			Log.d(TAG, "Succsesfuly parsed Json countries list.");
-		}
-		catch(Exception ex)
-		{
-			countryList = null;
-			Log.e(TAG, "Problems parsing Json countries list.", ex);
-		}
-		finally
-		{
-			if( jsonReader != null )
-				jsonReader.close();			
-		}		
-
-		return countryList;
-	}	
-
-	public Set<String> loadAndSortCities(CountryList countryList)
-	{
-		int counter = 0;
-		final TreeSet<String> citiesSet = new TreeSet<String>();
-
-		for( final Country theCountry : countryList.allCountries )
-		{
-			for( final String theCity : theCountry.cities )
-			{
-				counter++;
-				citiesSet.add(theCity);
-			}
-		}
-
-		Log.d(TAG, "Load and sort "+counter+" cities.");
-		
-		return citiesSet;
-	}
-
-	public void saveCitiesToFile(Set<String> citiesSet) throws IOException
-	{
-		//SortedSet subSet = ((TreeSet)citiesSet).subSet("J", "K");
-		//citiesSet = subSet;
-		
-		int counter = 0;
-		FileWriter fileWriter = null;
-		BufferedWriter bufferedWriter = null;
-
-		try
-		{			
-			final File file = new File(Environment.getExternalStoragePublicDirectory("Yaron"),"Cities3.txt");			
-			if (!file.exists())
-			{				
-				file.createNewFile();
-			}
-
-			fileWriter = new FileWriter(file,false);
-			bufferedWriter = new BufferedWriter(fileWriter);
-
-			for( String theCity : citiesSet)
-			{
-				counter++;
-				bufferedWriter.write(theCity);
-				bufferedWriter.newLine();
-			}
-		}
-		finally
-		{
-			if( bufferedWriter != null )
-				bufferedWriter.close();
-		}		
-
-		Log.d(TAG, "Write to file "+counter+" cities.");
-	}
-
-	public void sortAndFileCitiesOld(CountryList countryList) throws IOException
-	{
-		int counter = 0;
-		final ArrayList<String> citiesList = new ArrayList<String>(2000);
-
-		for( final Country theCountry : countryList.allCountries )
-		{
-			for( final String theCity : theCountry.cities )
-			{
-				counter++;
-				citiesList.add(theCity);
-			}
-		}
-
-		Log.d(TAG, "Load "+counter+" cities.");
-
-		Collections.sort(citiesList);
-
-		Log.d(TAG, "Sort cities list.");		
-
-		counter = 0;
-		FileWriter fileWriter = null;
-		BufferedWriter bufferedWriter = null;
-
-		try
-		{			
-			File file = new File(Environment.getExternalStoragePublicDirectory("Yaron"),"Cities2.txt");			
-			if (!file.exists())
-			{				
-				file.createNewFile();
-			}
-
-			fileWriter = new FileWriter(file,false);
-			bufferedWriter = new BufferedWriter(fileWriter);
-
-			for( String theCity : citiesList)
-			{
-				counter++;
-				bufferedWriter.write(theCity);
-				bufferedWriter.newLine();
-			}
-		}
-		finally
-		{
-			if( bufferedWriter != null )
-				bufferedWriter.close();
-		}		
-
-		Log.d(TAG, "Write to file "+counter+" cities.");
-	}
+//	public void sortAndFileCitiesOld(CountryList countryList) throws IOException
+//	{
+//		int counter = 0;
+//		final ArrayList<String> citiesList = new ArrayList<String>(2000);
+//
+//		for( final Country theCountry : countryList.allCountries )
+//		{
+//			for( final String theCity : theCountry.cities )
+//			{
+//				counter++;
+//				citiesList.add(theCity);
+//			}
+//		}
+//
+//		Log.d(TAG, "Load "+counter+" cities.");
+//
+//		Collections.sort(citiesList);
+//
+//		Log.d(TAG, "Sort cities list.");		
+//
+//		counter = 0;
+//		FileWriter fileWriter = null;
+//		BufferedWriter bufferedWriter = null;
+//
+//		try
+//		{			
+//			File file = new File(Environment.getExternalStoragePublicDirectory("Yaron"),"Cities2.txt");			
+//			if (!file.exists())
+//			{				
+//				file.createNewFile();
+//			}
+//
+//			fileWriter = new FileWriter(file,false);
+//			bufferedWriter = new BufferedWriter(fileWriter);
+//
+//			for( String theCity : citiesList)
+//			{
+//				counter++;
+//				bufferedWriter.write(theCity);
+//				bufferedWriter.newLine();
+//			}
+//		}
+//		finally
+//		{
+//			if( bufferedWriter != null )
+//				bufferedWriter.close();
+//		}		
+//
+//		Log.d(TAG, "Write to file "+counter+" cities.");
+//	}
 }
