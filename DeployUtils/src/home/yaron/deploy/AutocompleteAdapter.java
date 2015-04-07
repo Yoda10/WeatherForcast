@@ -6,94 +6,64 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
 public class AutocompleteAdapter extends ArrayAdapter<String>
 {
-	public AutocompleteAdapter(Context context, int textViewResourceId, SortedSet<String> data)
-	{
-		super(context, textViewResourceId);
-		mOriginalValues = data;		
-	}
+	private static final String TAG = AutocompleteAdapter.class.getSimpleName();
 
-	private YaronFilter yaronFilter = null;
+	private CitiesFilter citiesFilter = null;
+	private final Object mLock = new Object(); // a copy form super	
+	private SortedSet<String> mOriginalValues = null; 
+
+	public AutocompleteAdapter(Context context, int textViewResourceId, SortedSet<String> data)
+	{		
+		super(context, textViewResourceId);
+		Log.d(TAG, "AutocompleteAdapter(..)");
+		mOriginalValues = data; // Cities list.
+	}	
 
 	@Override
-	public Filter getFilter() 
+	public Filter getFilter()
 	{
-		if (yaronFilter == null) {
-			yaronFilter = new YaronFilter();
-		}
-		return yaronFilter;
-	}
+		if(citiesFilter == null)		
+			citiesFilter = new CitiesFilter();
 
-	private final Object mLock = new Object(); // a copy form super	
-	private SortedSet<String> mOriginalValues = null; //new ArrayList<String>(Arrays.asList(vec));
+		return citiesFilter;
+	}	
 
 	/**
 	 * <p>An array filter constrains the content of the array adapter with
 	 * a prefix. Each item that does not start with the supplied prefix
 	 * is removed from the list.</p>
 	 */
-
-	private class YaronFilter extends Filter
+	private class CitiesFilter extends Filter
 	{
 		@Override
 		protected FilterResults performFiltering(CharSequence prefix)
 		{			
-			FilterResults results = new FilterResults();
-
-			//			if(mOriginalValues == null) {
-			//				synchronized (mLock) {
-			//					mOriginalValues = new ArrayList<T>(mObjects);
-			//				}
-			//			}
+			FilterResults results = new FilterResults();			
 
 			if(prefix == null || prefix.length() == 0) // No filter
 			{ 
-				HashSet<String> unfilterSet;
-				synchronized (mLock) {
-					unfilterSet = new HashSet<String>(mOriginalValues.subSet("Aba","Abasto"));
+				final HashSet<String> unfilterSet;
+				synchronized(mLock) {
+					unfilterSet = new HashSet<String>(mOriginalValues.subSet("Aba","Abazzzzzzzz"));
 				}
 				results.values = unfilterSet;
 				results.count = unfilterSet.size();
 			}
 			else // Filter
-			{
-				//String prefixString = prefix.toString().toLowerCase();
-				//String prefixString = prefix.toString();
-				String prefixString = prefixToCapitalLetters(prefix.toString());
+			{	
+				// Convert every word first letter to upper case.
+				final String prefixString = prefixToCapitalLetters(prefix.toString());
 
-				HashSet<String> valuesSet;
+				final HashSet<String> valuesSet;
 				synchronized (mLock) {
 					valuesSet = new HashSet<String>(mOriginalValues.subSet(prefixString, prefixString+"zzzzzzzz"));
-				}
-
-				//				final int count = valuesSet.size();
-				//				final ArrayList<String> newValues = new ArrayList<String>();
-				//
-				//				for (int i = 0; i < count; i++) 
-				//				{
-				//					final String value = valuesSet.get(i);
-				//					final String valueText = value.toString().toLowerCase();
-				//
-				//					// First match against the whole, non-splitted value
-				//					if (valueText.startsWith(prefixString)) {
-				//						newValues.add(value);
-				//					} else {
-				//						final String[] words = valueText.split(" ");
-				//						final int wordCount = words.length;
-				//
-				//						// Start at index 0, in case valueText starts with space(s)
-				//						for (int k = 0; k < wordCount; k++) {
-				//							if (words[k].startsWith(prefixString)) {
-				//								newValues.add(value);
-				//								break;
-				//							}
-				//						}
-				//					}
-				//				}
+				}				
 
 				results.values = valuesSet;
 				results.count = valuesSet.size();
@@ -102,26 +72,28 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 			return results;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
-			AutocompleteAdapter.this.clear();					
-			AutocompleteAdapter.this.addAll((Set<String>) results.values);
-			//AutocompleteAdapter.this.addAll(new String[]{"xx","yy"});
-			//this.publishResults(constraint, results);			
+			AutocompleteAdapter.this.clear();				
+			AutocompleteAdapter.this.addAll((Set<String>)results.values);					
 		}
 	}
 
 	private String prefixToCapitalLetters(String prefix)
 	{
-		String upperPrefix = "";
-		final String[] wordList = prefix.split(" ");
+		StringBuilder upperPrefix = new StringBuilder();
+		final String[] wordList = prefix.trim().split(" ");
 		for( String aWord : wordList)
-		{			
-			final String firstLetter = aWord.substring(0,1).toUpperCase(Locale.US);
-			upperPrefix += firstLetter + aWord.substring(1) + " ";		
+		{	
+			if( aWord.length() > 0 )
+			{				
+				final String firstLetter = aWord.substring(0,1).toUpperCase(Locale.US);
+				upperPrefix.append(firstLetter + aWord.substring(1) + " ");
+			}
 		}
 
-		return upperPrefix.trim();
-	}	
+		return upperPrefix.toString().trim();
+	}
 }
