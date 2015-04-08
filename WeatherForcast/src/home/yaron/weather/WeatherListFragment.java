@@ -2,15 +2,25 @@ package home.yaron.weather;
 
 import home.yaron.weather_forcast.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,15 +38,20 @@ import android.widget.Toast;
 
 public class WeatherListFragment extends Fragment implements OnClickListener
 {
+	private final static String TAG = WeatherListFragment.class.getSimpleName();
+
 	private ListView listView;
-	private View fragmentView;
+	private View fragmentView = null;
 	private WeatherForcastData weatherForcastData;
+	private final CountDownLatch waitLatch = new CountDownLatch(1);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{		
-		super.onCreate(savedInstanceState);		
-		(new IndexAsyncLoad(this.getActivity())).execute();
+		Log.d(TAG,"onCreate(..)");
+		super.onCreate(savedInstanceState);			
+		//(new IndexAsyncLoad(this.getActivity(),fragmentView)).execute(waitLatch);
+		new IndexAsyncLoad().execute(waitLatch);
 	}	
 
 	@Override
@@ -44,6 +59,10 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	{
 		// Inflate the layout for this fragment
 		fragmentView = inflater.inflate(R.layout.fragment_weather_list, container, false);
+
+		// The fragment UI is inflated - release the wait latch on index async load task.
+		waitLatch.countDown();
+
 		listView = (ListView)fragmentView.findViewById(R.id.fragment_weather_listView);
 		listView.requestFocus();		
 
@@ -71,10 +90,10 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 
 		// Search button.
 		Button searchButton = (Button)fragmentView.findViewById(R.id.fragment_weather_search_button);		
-		searchButton.setOnClickListener(this);			
+		searchButton.setOnClickListener(this);		
 
 		return fragmentView;
-	}
+	}	
 
 	private void setListAdapterAndHeader()
 	{
@@ -137,23 +156,23 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 		protected void onPostExecute(WeatherForcastData result)
 		{	
 			if( getActivity() == null ) return;
-			
+
 			if( result != null && fragmentView != null )
 			{				
 				weatherForcastData = result;
 				setListAdapterAndHeader();
 				button.setText(getResources().getString(R.string.button_search));				
-				
+
 				// Set trim search text.
 				final EditText searchCity = (EditText)fragmentView.findViewById(R.id.fragment_weather_search_city);
 				final String city = searchCity.getText().toString().trim();
 				searchCity.setText(city); // Set the trim operation.
 				searchCity.setSelection(city.length()); // Move the cursor to the end.
-				
+
 				// Hide the keyboard.
 				final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMethodManager.hideSoftInputFromWindow(searchCity.getWindowToken(), 0);
-				
+
 				fragmentView.invalidate();
 			}
 			else
@@ -222,5 +241,89 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 		}	
 
 		return weatherUrl;
+	}
+
+	private class IndexAsyncLoad extends AsyncTask<CountDownLatch, Void, SortedSet<String>>
+	{		
+		private final static String INDEX_FILE = "AutocompleteIndex.txt";	
+
+		@Override
+		protected SortedSet<String> doInBackground(CountDownLatch... params)
+		{		
+			final SortedSet<String> citiesSet = loadIndexFromFile(getActivity());
+
+			try {
+				params[0].await(); // Wait for the fragment to inflate its UI.
+			} catch (InterruptedException e) {		
+				e.printStackTrace();
+			}
+
+			return citiesSet;	
+		}
+
+		@Override
+		protected void onPostExecute(SortedSet<String> citiesSet)
+		{			
+			Log.d(TAG,"onPostExecute(..)");
+			
+			TextView autoComplete = null;
+			if( fragmentView != null )
+			{
+				autoComplete = (TextView)fragmentView.findViewById(R.id.fragment_weather_city);
+				autoComplete.setBackgroundColor(Color.GREEN);				
+			}
+
+			//final AutocompleteAdapter adapter = new AutocompleteAdapter(context, android.R.layout.simple_list_item_1, citiesSet);					
+			//autoComplete.setAdapter(adapter);
+			
+		}
+
+		private SortedSet<String> loadIndexFromFile(Context context)
+		{
+			Log.d(TAG, "loadIndexFromFile(..)");	
+
+			TreeSet<String> citiesSet = new TreeSet<String>();
+			InputStream inputStream = null;
+			BufferedReader bufferedReader = null;
+
+			try
+			{
+				// Open stream to cities asset file.
+				final AssetManager assetManager = context.getAssets();
+				inputStream = assetManager.open(INDEX_FILE);
+				bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"));
+
+				String line = null;
+				while( (line = bufferedReader.readLine()) != null )
+				{
+					citiesSet.add(line);
+				}
+			}
+			catch(Exception ex)
+			{
+				citiesSet = null;
+				Log.e(TAG, "Problem loading cities index from file.", ex);			
+			}
+			finally
+			{
+				if(bufferedReader == null && inputStream != null)
+					try {
+						inputStream.close();
+					} catch (IOException e) {					
+						e.printStackTrace();
+					}
+
+				if(bufferedReader != null)
+					try {
+						bufferedReader.close();
+					} catch (IOException e) {					
+						e.printStackTrace();
+					}
+			}
+
+			Log.d(TAG, "Successfully loading cities index from file.");	
+
+			return citiesSet;
+		}
 	}
 }
