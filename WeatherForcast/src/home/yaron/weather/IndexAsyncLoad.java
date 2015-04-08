@@ -9,15 +9,41 @@ import java.util.TreeSet;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.util.Log;
 
-public class AutocompleteIndex
+public class IndexAsyncLoad extends AsyncTask<Void, Void, SortedSet<String>>
 {
-	final static String TAG = AutocompleteIndex.class.getSimpleName();
-	final static String INDEX_FILE = "AutocompleteIndex.txt";
+	final static String TAG = IndexAsyncLoad.class.getSimpleName();
+	final static String INDEX_FILE = "AutocompleteIndex.txt";	
 
-	public static SortedSet<String> loadIndexFromFile(Context context)
+	private Context context = null;
+
+	public IndexAsyncLoad(Context context)
 	{
+		//super();
+		this.context = context;
+	}	
+
+	@Override
+	protected SortedSet<String> doInBackground(Void... params)
+	{	
+		return loadIndexFromFile(context);		
+	}
+
+	@Override
+	protected void onPostExecute(SortedSet<String> citiesSet)
+	{			
+		//final AutoCompleteTextView autoComplete = (AutoCompleteTextView)findViewById(R.id.auto_complete_text);
+		//final AutocompleteAdapter adapter = new AutocompleteAdapter(context, android.R.layout.simple_list_item_1, citiesSet);					
+		//autoComplete.setAdapter(adapter);
+		Log.d(TAG,"onPostExecute(..)");
+	}
+
+	private SortedSet<String> loadIndexFromFile(Context context)
+	{
+		Log.d(TAG, "loadIndexFromFile(..)");	
+
 		TreeSet<String> citiesSet = new TreeSet<String>();
 		InputStream inputStream = null;
 		BufferedReader bufferedReader = null;
@@ -57,8 +83,9 @@ public class AutocompleteIndex
 				}
 		}
 
-		Log.e(TAG, "Successfully loading cities index from file.");	
+		Log.d(TAG, "Successfully loading cities index from file.");	
 
 		return citiesSet;
 	}
 }
+

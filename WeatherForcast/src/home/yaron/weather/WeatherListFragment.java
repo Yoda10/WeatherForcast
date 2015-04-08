@@ -33,6 +33,13 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	private WeatherForcastData weatherForcastData;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{		
+		super.onCreate(savedInstanceState);		
+		(new IndexAsyncLoad(this.getActivity())).execute();
+	}	
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 	{
 		// Inflate the layout for this fragment
