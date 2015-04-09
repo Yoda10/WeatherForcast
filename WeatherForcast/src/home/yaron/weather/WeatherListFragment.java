@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,8 +49,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 	public void onCreate(Bundle savedInstanceState)
 	{		
 		Log.d(TAG,"onCreate(..)");
-		super.onCreate(savedInstanceState);			
-		//(new IndexAsyncLoad(this.getActivity(),fragmentView)).execute(waitLatch);
+		super.onCreate(savedInstanceState);		
 		new IndexAsyncLoad().execute(waitLatch);
 	}	
 
