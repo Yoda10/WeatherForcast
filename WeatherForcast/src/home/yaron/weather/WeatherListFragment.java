@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -265,17 +266,13 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 		protected void onPostExecute(SortedSet<String> citiesSet)
 		{			
 			Log.d(TAG,"onPostExecute(..)");
-			
-			TextView autoComplete = null;
-			if( fragmentView != null )
-			{
-				autoComplete = (TextView)fragmentView.findViewById(R.id.fragment_weather_city);
-				autoComplete.setBackgroundColor(Color.GREEN);				
-			}
 
-			//final AutocompleteAdapter adapter = new AutocompleteAdapter(context, android.R.layout.simple_list_item_1, citiesSet);					
-			//autoComplete.setAdapter(adapter);
-			
+			if( fragmentView != null && citiesSet != null )
+			{
+				final AutoCompleteTextView autoComplete = (AutoCompleteTextView)fragmentView.findViewById(R.id.fragment_weather_search_city);				
+				final AutocompleteAdapter adapter = new AutocompleteAdapter(getActivity(), android.R.layout.simple_list_item_1, citiesSet);					
+				autoComplete.setAdapter(adapter);
+			}			
 		}
 
 		private SortedSet<String> loadIndexFromFile(Context context)
