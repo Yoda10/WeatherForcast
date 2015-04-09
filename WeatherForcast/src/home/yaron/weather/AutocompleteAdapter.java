@@ -1,5 +1,7 @@
 package home.yaron.weather;
 
+import home.yaron.weather_forcast.R;
+
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -7,8 +9,12 @@ import java.util.SortedSet;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.TextView;
 
 public class AutocompleteAdapter extends ArrayAdapter<String>
 {
@@ -16,13 +22,15 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 
 	private CitiesFilter citiesFilter = null;
 	private final Object mLock = new Object(); // a copy form super	
-	private SortedSet<String> mOriginalValues = null; 
+	private SortedSet<String> mOriginalValues = null;
+	private LayoutInflater inflater;	
 
 	public AutocompleteAdapter(Context context, int textViewResourceId, SortedSet<String> data)
 	{		
 		super(context, textViewResourceId);
 		Log.d(TAG, "AutocompleteAdapter(..)");
 		mOriginalValues = data; // Cities list.
+		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}	
 
 	@Override
@@ -77,7 +85,7 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
 			AutocompleteAdapter.this.clear();				
-			AutocompleteAdapter.this.addAll((Set<String>)results.values);					
+			AutocompleteAdapter.this.addAll((Set<String>)results.values);			
 		}
 	}
 
@@ -95,5 +103,19 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 		}
 
 		return upperPrefix.toString().trim();
+	}	
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent)
+	{	
+		if( convertView == null )
+		{			
+			convertView = inflater.inflate(R.layout.autocomplete_item, null);
+		}	
+
+		final TextView textView = (TextView)convertView.findViewById(R.id.item_autocomplete_text);		
+		textView.setText(this.getItem(position));
+
+		return convertView;	
 	}
 }
