@@ -2,11 +2,11 @@ package home.yaron.weather;
 
 import home.yaron.weather_forcast.R;
 
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,13 +52,13 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 		@Override
 		protected FilterResults performFiltering(CharSequence prefix)
 		{			
-			FilterResults results = new FilterResults();			
+			final FilterResults results = new FilterResults();			
 
 			if(prefix == null || prefix.length() == 0) // No filter
 			{ 
-				final HashSet<String> unfilterSet;
-				synchronized(mLock) {
-					unfilterSet = new HashSet<String>(mOriginalValues.subSet("Aba","Abazzzzzzzz"));
+				final TreeSet<String> unfilterSet;
+				synchronized(mLock) { // Lock for reading original values.
+					unfilterSet = new TreeSet<String>(mOriginalValues.subSet("Aba","Abazzzzzzzz"));
 				}
 				results.values = unfilterSet;
 				results.count = unfilterSet.size();
@@ -68,9 +68,9 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 				// Convert every word first letter to upper case.
 				final String prefixString = prefixToCapitalLetters(prefix.toString());
 
-				final HashSet<String> valuesSet;
-				synchronized (mLock) {
-					valuesSet = new HashSet<String>(mOriginalValues.subSet(prefixString, prefixString+"zzzzzzzz"));
+				final TreeSet<String> valuesSet;
+				synchronized (mLock) { // Lock for reading original values.
+					valuesSet = new TreeSet<String>(mOriginalValues.subSet(prefixString, prefixString+"zzzzzzzz"));
 				}				
 
 				results.values = valuesSet;
@@ -85,13 +85,13 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 		protected void publishResults(CharSequence constraint, FilterResults results)
 		{
 			AutocompleteAdapter.this.clear();				
-			AutocompleteAdapter.this.addAll((Set<String>)results.values);			
+			AutocompleteAdapter.this.addAll((TreeSet<String>)results.values);			
 		}
 	}
 
 	private String prefixToCapitalLetters(String prefix)
 	{
-		StringBuilder upperPrefix = new StringBuilder();
+		final StringBuilder upperPrefix = new StringBuilder();
 		final String[] wordList = prefix.trim().split(" ");
 		for( String aWord : wordList)
 		{	
@@ -105,6 +105,7 @@ public class AutocompleteAdapter extends ArrayAdapter<String>
 		return upperPrefix.toString().trim();
 	}	
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{	
