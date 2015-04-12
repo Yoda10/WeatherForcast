@@ -268,7 +268,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 			if( fragmentView != null && citiesSet != null )
 			{
 				final AutoCompleteTextView autoComplete = (AutoCompleteTextView)fragmentView.findViewById(R.id.fragment_weather_search_city);				
-				final AutocompleteAdapter adapter = new AutocompleteAdapter(getActivity(), android.R.layout.simple_list_item_1, citiesSet);					
+				final AutocompleteAdapter adapter = new AutocompleteAdapter(fragmentView.getContext(), android.R.layout.simple_list_item_1, citiesSet);					
 				autoComplete.setAdapter(adapter);
 			}			
 		}
