@@ -52,14 +52,15 @@
             android:layout_marginTop="45dp"
             android:completionThreshold="@integer/completion_threshold"
             android:dropDownHeight="150dp"
-            android:dropDownVerticalOffset="40dp"
+            android:dropDownVerticalOffset="75dp"
             android:dropDownWidth="130dp"
             android:hint="@string/text_search_hint"
+            android:imeOptions="flagNoFullscreen"
             android:inputType="text"
             android:maxWidth="130dp"
             android:popupBackground="@color/popupBackground"
             android:textColor="@android:color/black"
-            android:textSize="15sp" >
+            android:textSize="17sp" >
         </AutoCompleteTextView>
 
         <Button
