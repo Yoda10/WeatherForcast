@@ -171,6 +171,10 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 				// Hide the keyboard.
 				final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMethodManager.hideSoftInputFromWindow(searchCity.getWindowToken(), 0);
+				
+				// Dismiss the auto complete list.
+				AutoCompleteTextView z = (AutoCompleteTextView)fragmentView.findViewById(R.id.fragment_weather_search_city);				
+				z.dismissDropDown();
 
 				fragmentView.invalidate();
 			}
