@@ -43,19 +43,24 @@
             android:textSize="15sp" >
         </TextView>
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/fragment_weather_search_city"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_weather_date_to"
             android:layout_centerInParent="true"
             android:layout_marginTop="45dp"
+            android:completionThreshold="@integer/completion_threshold"
+            android:dropDownHeight="150dp"
+            android:dropDownVerticalOffset="40dp"
+            android:dropDownWidth="130dp"
             android:hint="@string/text_search_hint"
             android:inputType="text"
             android:maxWidth="130dp"
+            android:popupBackground="@color/popupBackground"
             android:textColor="@android:color/black"
             android:textSize="15sp" >
-        </EditText>
+        </AutoCompleteTextView>
 
         <Button
             android:id="@+id/fragment_weather_search_button"
