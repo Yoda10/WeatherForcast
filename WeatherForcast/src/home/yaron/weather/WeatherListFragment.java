@@ -167,6 +167,7 @@ public class WeatherListFragment extends Fragment implements OnClickListener
 				final String city = searchCity.getText().toString().trim();
 				searchCity.setText(city); // Set the trim operation.
 				searchCity.setSelection(city.length()); // Move the cursor to the end.
+				searchCity.clearFocus(); // Clear focus so the keyboard will stay down on orientation change.
 
 				// Hide the keyboard.
 				final InputMethodManager inputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
